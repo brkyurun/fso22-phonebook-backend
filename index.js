@@ -1,4 +1,5 @@
 const express = require("express");
+const res = require("express/lib/response");
 const app = express();
 const PORT = 3001;
 
@@ -26,7 +27,18 @@ const persons = [
 ];
 
 app.get("/api/persons", (request, response) => {
-  return response.json(persons);
+  response.json(persons);
+});
+
+app.get("/info", (request, response) => {
+  const information = `Phone book has info for ${persons.length} people.`;
+  const date = new Date().toString();
+  const responseHtml = `
+    <div>${information}</div>
+    <br>
+    <div>${date}</div>
+  `;
+  response.send(responseHtml);
 });
 
 app.listen(PORT, () => {
