@@ -1,9 +1,10 @@
 const express = require("express");
-const res = require("express/lib/response");
+const morgan = require("morgan");
 const app = express();
 const PORT = 3001;
 
 app.use(express.json());
+app.use(morgan("tiny"));
 
 let persons = [
   {
