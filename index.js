@@ -3,6 +3,8 @@ const res = require("express/lib/response");
 const app = express();
 const PORT = 3001;
 
+app.use(express.json());
+
 let persons = [
   {
     id: 1,
@@ -26,10 +28,6 @@ let persons = [
   },
 ];
 
-app.get("/api/persons", (request, response) => {
-  response.json(persons);
-});
-
 app.get("/info", (request, response) => {
   const information = `Phone book has info for ${persons.length} people.`;
   const date = new Date().toString();
@@ -39,6 +37,32 @@ app.get("/info", (request, response) => {
     <div>${date}</div>
   `;
   response.send(responseHtml);
+});
+
+app.get("/api/persons", (request, response) => {
+  response.json(persons);
+});
+
+app.post("/api/persons", (request, response) => {
+  const newId = Math.floor(Math.random() * 125);
+  const body = request.body;
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: "Please include both name and number.",
+    });
+  } else if (
+    persons.find(
+      (person) => person.name.toLowerCase() === body.name.toLowerCase()
+    )
+  ) {
+    return response.status(400).json({
+      error: "Name already exists.",
+    });
+  }
+
+  const newPerson = { ...body, id: newId };
+  persons.concat(newPerson);
+  response.json(newPerson);
 });
 
 app.get("/api/persons/:id", (request, response) => {
