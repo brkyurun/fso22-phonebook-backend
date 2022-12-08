@@ -1,0 +1,25 @@
+{
+  "name": "phonebook-backend",
+  "version": "0.0.1",
+  "description": "Backend code for the Full-Stack Open 2022 phonebook project.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brkyurun/fso22-phonebook-backend.git"
+  },
+  "author": "Berkay Urun",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brkyurun/fso22-phonebook-backend/issues"
+  },
+  "homepage": "https://github.com/brkyurun/fso22-phonebook-backend#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
