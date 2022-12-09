@@ -67,7 +67,8 @@ app.post("/api/persons", (request, response) => {
   }
 
   const newPerson = { ...body, id: newId };
-  persons.concat(newPerson);
+  console.log("newPerson", newPerson);
+  persons.push(newPerson);
   response.json(newPerson);
 });
 
