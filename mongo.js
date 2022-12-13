@@ -3,16 +3,6 @@ const password = process.argv[2];
 const personName = process.argv[3] ?? "";
 const personNumber = process.argv[4] ?? "";
 
-const url = `mongodb+srv://fullstack:${password}@cluster0.mz8qqcn.mongodb.net/phonebook?retryWrites=true&w=majority`;
-mongoose.connect(url);
-
-const personSchema = new mongoose.Schema({
-  name: String,
-  number: Number,
-});
-
-const Person = new mongoose.model("Person", personSchema);
-
 async function createUser(name, number) {
   const person = new Person({
     name: name,

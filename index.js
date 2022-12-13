@@ -1,3 +1,5 @@
+require("dotenv").config();
+const Person = require("./models/note");
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -47,45 +49,34 @@ app.get("/info", (request, response) => {
 });
 
 app.get("/api/persons", (request, response) => {
-  response.json(persons);
+  Person.find({}).then((people) => response.json(people));
 });
 
 app.post("/api/persons", (request, response) => {
-  const newId = Math.floor(Math.random() * 125);
   const body = request.body;
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: "Please include both name and number.",
-    });
-  } else if (
-    persons.find(
-      (person) => person.name.toLowerCase() === body.name.toLowerCase()
-    )
-  ) {
-    return response.status(400).json({
-      error: "Name already exists.",
-    });
-  }
+  const newPerson = new Person({
+    name: body.name,
+    number: body.number,
+  });
 
-  const newPerson = { ...body, id: newId };
-  console.log("newPerson", newPerson);
-  persons.push(newPerson);
-  response.json(newPerson);
+  newPerson.save().then(() => {
+    response.status(201).json(newPerson.toJSON());
+  });
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const requestId = Number(request.params.id);
-  const person = persons.find((person) => person.id === requestId);
-  if (!person) {
-    response.status(404).end();
-  } else {
-    response.json(person);
-  }
+  const person = Person.findById(request.params.id);
+  person.then((people) => {
+    if (!people) {
+      response.status(404).end();
+    } else {
+      response.json(people);
+    }
+  });
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const requestId = Number(request.params.id);
-  persons = persons.filter((person) => person.id !== requestId);
+  Person.findByIdAndDelete(request.params.id);
   response.status(204).end();
 });
 
