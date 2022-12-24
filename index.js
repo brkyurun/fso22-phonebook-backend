@@ -92,6 +92,18 @@ app.delete("/api/persons/:id", (request, response) => {
   );
 });
 
+app.put("/api/persons/:id", (request, response) => {
+  const body = request.body;
+  const newPerson = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Person.findByIdAndUpdate(request.params.id, newPerson, { new: true }).then(
+    (updatedNote) => response.json(updatedNote)
+  );
+});
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
