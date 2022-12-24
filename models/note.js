@@ -22,6 +22,12 @@ const personSchema = new mongoose.Schema({
   number: {
     type: String,
     required: true,
+    minLength: 8,
+    validate: {
+      validator(phoneNumber) {
+        return /^[0-9]{2,3}-[0-9]+$/.test(phoneNumber);
+      },
+    },
   },
 });
 
