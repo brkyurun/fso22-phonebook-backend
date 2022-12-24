@@ -6,6 +6,16 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
 app.use(express.json());
 app.use(cors());
 app.use(express.static("dist"));
@@ -13,6 +23,7 @@ morgan.token("body", (request, response) => JSON.stringify(request.body));
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
+app.use(errorHandler);
 
 let persons = [
   {
