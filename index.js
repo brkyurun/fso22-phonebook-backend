@@ -4,6 +4,7 @@ const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
 const app = express();
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3001;
 
 const errorHandler = (error, request, response, next) => {
@@ -21,7 +22,7 @@ const errorHandler = (error, request, response, next) => {
 app.use(express.json());
 app.use(cors());
 app.use(express.static("dist"));
-morgan.token("body", (request, response) => JSON.stringify(request.body));
+morgan.token("body", (request) => JSON.stringify(request.body));
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
@@ -91,7 +92,7 @@ app.get("/api/persons/:id", (request, response) => {
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  Person.findByIdAndRemove(request.params.id).then((result) =>
+  Person.findByIdAndRemove(request.params.id).then(() =>
     response.status(204).end()
   );
 });
