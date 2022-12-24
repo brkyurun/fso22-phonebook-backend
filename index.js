@@ -11,6 +11,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
@@ -23,7 +25,6 @@ morgan.token("body", (request, response) => JSON.stringify(request.body));
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
-app.use(errorHandler);
 
 let persons = [
   {
@@ -63,16 +64,19 @@ app.get("/api/persons", (request, response) => {
   Person.find({}).then((people) => response.json(people));
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
   const newPerson = new Person({
     name: body.name,
     number: body.number,
   });
 
-  newPerson.save().then(() => {
-    response.status(201).json(newPerson.toJSON());
-  });
+  newPerson
+    .save()
+    .then(() => {
+      response.status(201).json(newPerson.toJSON());
+    })
+    .catch((err) => next(err));
 });
 
 app.get("/api/persons/:id", (request, response) => {
@@ -99,10 +103,14 @@ app.put("/api/persons/:id", (request, response) => {
     number: body.number,
   };
 
-  Person.findByIdAndUpdate(request.params.id, newPerson, { new: true }).then(
-    (updatedNote) => response.json(updatedNote)
-  );
+  Person.findByIdAndUpdate(request.params.id, newPerson, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  }).then((updatedNote) => response.json(updatedNote));
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
